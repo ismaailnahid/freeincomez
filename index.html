@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spin Lottery</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: sans-serif;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #2b5876, #4e4376);
+      color: #fff;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 10px solid #fff;
+      overflow: hidden;
+    }
+
+    .wheel {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      border: 5px solid #444;
+      position: absolute;
+      transition: transform 5s ease-out;
+    }
+
+    .wheel div {
+      position: absolute;
+      width: 50%; height: 50%;
+      transform-origin: 100% 100%;
+      text-align: center;
+      padding-top: 40px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .pointer {
+      width: 0; height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid red;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px 25px;
+      background: #fff;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎡 Spin Lottery!</h1>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"></div>
+  </div>
+  <button onclick="spin()">Spin Now</button>
+  <div id="result"></div>
+
+  <script>
+    const prizes = ["💰 100 Tk", "😢 Better Luck", "🎁 Gift", "🍬 Candy", "🎉 Jackpot!", "☕ Tea", "🔁 Try Again", "🧧 Bonus"];
+    const wheel = document.getElementById("wheel");
+
+    function createWheel() {
+      const sliceAngle = 360 / prizes.length;
+      prizes.forEach((prize, index) => {
+        const slice = document.createElement("div");
+        slice.innerText = prize;
+        slice.style.transform = `rotate(${index * sliceAngle}deg) skewY(-60deg)`;
+        slice.style.background = `hsl(${index * sliceAngle}, 70%, 50%)`;
+        wheel.appendChild(slice);
+      });
+    }
+
+    let spinning = false;
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      const randomDegree = 360 * 5 + Math.floor(Math.random() * 360);
+      wheel.style.transform = `rotate(${randomDegree}deg)`;
+
+      setTimeout(() => {
+        const actualDeg = randomDegree % 360;
+        const sliceAngle = 360 / prizes.length;
+        const index = Math.floor((prizes.length - (actualDeg / sliceAngle)) % prizes.length);
+        document.getElementById("result").innerText = "🎯 Result: " + prizes[index];
+        spinning = false;
+      }, 5000);
+    }
+
+    createWheel();
+  </script>
+</body>
+</html>
